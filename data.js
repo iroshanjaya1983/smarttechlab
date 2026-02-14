@@ -51,7 +51,7 @@ const projects = [
     "category": "iot",
     "shortDesc": "This project transforms an ESP32 microcontroller into a standalone Wireless Access Point (WAP) and Web Server. It allows any Wi-Fi-enabled device (sma",
     "fullDesc": "Key Features\nInfrastructure-Free: Acts as its own Wi-Fi Hotspot (SSID: esp32-iot), eliminating dependency on external networks.\n\nEmbedded Web Server: Hosts a responsive HTML/CSS dashboard directly on the chip's flash memory.\n\nReal-Time Hardware Interaction: Low-latency control of GPIO pins (onboard LED) via HTTP GET requests.\n\nMobile-Optimized UI/UX: Features a \"Light Mode\" aesthetic with a responsive design that adapts to any screen size.\n\nEfficient Resource Management: Written in MicroPython, utilizing non-blocking socket communication to ensure high uptime and stability.\n\nPotential Applications\nLocalized Smart Switches: Controlling lights or motors in areas without Wi-Fi.\n\nIndustrial Maintenance: Providing a diagnostic dashboard for technicians to access via their phones.\n\nEducational IoT: A foundational project for learning about network sockets and embedded web servers.",
-    "image": "images/1.jpeg auto=format&fit=crop&q=80&w=800",
+    "image": "images/1.jpeg?auto=format&fit=crop&q=80&w=800",
     "techStack": [
         "ESP32 (Dual-core",
         "2.4GHz Wi-Fi)",
@@ -87,6 +87,7 @@ function getProjectsByCategory(category) {
     if (category === 'all') return projects;
     return projects.filter(p => p.category === category);
 }
+
 
 
 
