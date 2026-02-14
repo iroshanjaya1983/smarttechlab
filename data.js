@@ -46,7 +46,7 @@ const projects = [
 	// Add this object to the 'projects' array in data.js
 // Add this object to the 'projects' array in data.js
 {
-    "id": "1771082757811",
+    "id": "5",
     "title": "ESP32 Edge-Web Control Node",
     "category": "iot",
     "shortDesc": "This project transforms an ESP32 microcontroller into a standalone Wireless Access Point (WAP) and Web Server. It allows any Wi-Fi-enabled device (sma",
@@ -87,4 +87,5 @@ function getProjectsByCategory(category) {
     if (category === 'all') return projects;
     return projects.filter(p => p.category === category);
 }
+
 
