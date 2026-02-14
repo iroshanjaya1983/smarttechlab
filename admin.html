@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="si">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Indika</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-nav {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Password Login Screen -->
+    <div id="login-overlay"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <h2 style="font-family: 'Outfit'; color: white; margin-bottom: 1rem;">Admin Access</h2>
+        <input type="password" id="adminPassword" placeholder="Enter Password"
+            style="padding: 10px; border-radius: 5px; border: none; margin-bottom: 10px;">
+        <button onclick="checkPassword()"
+            style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer;">Login</button>
+        <p id="login-error" style="color: #ef4444; margin-top: 10px; display: none;">Incorrect Password!</p>
+    </div>
+
+    <div class="container" id="admin-dashboard" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="logo">Admin Dashboard</div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">View Site</a></li>
+                    <li><a href="#" class="active">Add Project</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="glass-panel" style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+            <h2 style="font-family: 'Outfit'; margin-bottom: 1.5rem; text-align: center;">Add New Project</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+                Step 1: Fill details. Step 2: Copy code to <code>data.js</code>. Step 3: Copy image to
+                <code>images/</code> folder.
+            </p>
+
+            <form id="projectForm" class="admin-form">
+                <div class="form-group">
+                    <label for="title">Project Title</label>
+                    <input type="text" id="title" class="form-input" required placeholder="Ex: Smart Home Automation">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" class="form-select" required>
+                        <option value="electronic">Electronic</option>
+                        <option value="iot">IoT</option>
+                        <option value="software">Software</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Project Image</label>
+                    <input type="file" id="image" class="form-input" accept="image/*">
+                    <small style="color: var(--text-secondary);">Select a photo from your computer.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="shortDesc">Short Description (for card)</label>
+                    <input type="text" id="shortDesc" class="form-input" required maxlength="150"
+                        placeholder="Brief summary...">
+                </div>
+
+                <div class="form-group">
+                    <label for="fullDesc">Full Description</label>
+                    <textarea id="fullDesc" class="form-textarea" rows="4" required
+                        placeholder="Detailed explanation of the project..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="techStack">Technologies (comma separated)</label>
+                    <input type="text" id="techStack" class="form-input" placeholder="React, Node.js, Arduino, C++">
+                </div>
+
+                <div class="form-group">
+                    <label for="codeSnippet">Code Snippet (Optional)</label>
+                    <textarea id="codeSnippet" class="form-textarea" rows="6"
+                        placeholder="// Paste your code here..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" class="form-input">
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%;">Generate Project Code</button>
+            </form>
+
+            <div id="output-area">
+                <h3 style="color: #60a5fa; margin-bottom: 0.5rem; font-size: 1rem;">Copy this and paste into data.js:
+                </h3>
+                <textarea id="jsonOutput" class="form-textarea" rows="10" readonly
+                    style="font-family: monospace; font-size: 0.9rem; color: #a5b4fc;"></textarea>
+                <button onclick="copyToClipboard()" class="btn"
+                    style="background: #10b981; margin-top: 1rem; width: 100%;">Copy to Clipboard</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.getElementById('projectForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Handle Image Path
+            const imageInput = document.getElementById('image');
+            let imagePath = 'https://via.placeholder.com/800x400';
+
+            if (imageInput.files.length > 0) {
+                const fileName = imageInput.files[0].name;
+                imagePath = `images/${fileName}`; // Set path relative to project root
+            }
+
+            // Gather Data
+            const project = {
+                id: Date.now().toString(),
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                shortDesc: document.getElementById('shortDesc').value,
+                fullDesc: document.getElementById('fullDesc').value,
+                image: imagePath,
+                techStack: document.getElementById('techStack').value.split(',').map(item => item.trim()),
+                codeSnippet: document.getElementById('codeSnippet').value,
+                date: document.getElementById('date').value || new Date().toISOString().split('T')[0]
+            };
+
+            // Format Output
+            const jsonString = JSON.stringify(project, null, 4);
+            let finalOutput = `// Add this object to the 'projects' array in data.js\n${jsonString},`;
+
+            // Add instruction if local image is used
+            if (imageInput.files.length > 0) {
+                finalOutput += `\n\n/* \n   IMPORTANT: \n   You selected a local file: "${imageInput.files[0].name}"\n   PLEASE COPY/MOVE this file into the "images" folder inside your website directory!\n*/`;
+            }
+
+            // Display Output
+            document.getElementById('output-area').style.display = 'block';
+            document.getElementById('jsonOutput').value = finalOutput;
+
+            // Scroll to output
+            document.getElementById('output-area').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("jsonOutput");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("Copied to clipboard! Now paste it into your data.js file.");
+        }
+
+        // Allow Enter key to submit password
+        document.getElementById('adminPassword').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            // CHANGE THIS PASSWORD TO YOUR OWN SECURE PASSWORD
+            if (password === "admin123") {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>
