@@ -16,7 +16,7 @@ const projects = [
         "category": "software",
         "shortDesc": "Web-based dashboard for tracking stock levels in real-time.",
         "fullDesc": "Built with React and Node.js, this application allows warehouse managers to track inventory, generate PDF reports, and receive low-stock alerts. It features a responsive UI with dark mode support.",
-        "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+        "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=800&w=800",
         "techStack": ["React", "Node.js", "MongoDB", "Express"],
         "codeSnippet": "const getInventory = async (req, res) => {\n  const items = await Item.find({});\n  res.json(items);\n};",
         "date": "2023-11-02"
@@ -87,6 +87,7 @@ function getProjectsByCategory(category) {
     if (category === 'all') return projects;
     return projects.filter(p => p.category === category);
 }
+
 
 
 
